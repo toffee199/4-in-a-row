@@ -13,7 +13,9 @@ public class GameController : MonoBehaviour
     
     private void Awake()
     {
-        if(gameInstance == null)
+        InitializeWindows();
+
+        if (gameInstance == null)
         {
             gameInstance = this;
         }
@@ -36,5 +38,13 @@ public class GameController : MonoBehaviour
         {
             //show error
         }
+    }
+
+    private void InitializeWindows()
+    {
+        startWindow.SetActive(true);
+        //hide all other windows
+        gameWindow.SetActive(false);
+
     }
 }
