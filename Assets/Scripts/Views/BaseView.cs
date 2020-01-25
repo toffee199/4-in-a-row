@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BaseView : MonoBehaviour
 {
@@ -10,12 +8,12 @@ public class BaseView : MonoBehaviour
         gameObject.SetActive(isVisible);
     }
 
-    public void Show()
+    public virtual void Show()
     {
         ToggleVisibility(true);
     }
 
-    public void Hide()
+    public virtual void Hide()
     {
         ToggleVisibility(false);
     }
