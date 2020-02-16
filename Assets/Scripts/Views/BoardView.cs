@@ -7,12 +7,14 @@ public class BoardView : BaseView
 {
     public ColumnView[] columns;
     public Action<int> onColumnClicked;
+    public Action<int> onColumnHovered;
 
     public void Start()
     {
         foreach (ColumnView column in columns)
         {
             column.onColumnClicked += HandleColumnClicked;
+            column.onColumnHovered += HandleColumnHovered;
         }
     }
 
@@ -21,6 +23,15 @@ public class BoardView : BaseView
         foreach(ColumnView column in columns)
         {
             column.Reset();
+        }
+    }
+
+    private void OnDestroy()
+    {
+        foreach (ColumnView column in columns)
+        {
+            column.onColumnClicked -= HandleColumnClicked;
+            column.onColumnHovered -= HandleColumnHovered;
         }
     }
 
@@ -35,6 +46,18 @@ public class BoardView : BaseView
         {
             if(columns[i] == column) {
                  onColumnClicked?.Invoke(i);
+                break;
+            }
+        }
+    }
+
+    private void HandleColumnHovered(ColumnView column)
+    {
+        for (int i = 0; i < columns.Length; i++)
+        {
+            if (columns[i] == column)
+            {
+                onColumnHovered?.Invoke(i);
                 break;
             }
         }

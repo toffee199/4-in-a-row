@@ -11,7 +11,7 @@ public class GameController : MonoBehaviour
     public StartView startView;
     public GameView gameView;
 
-    private int currentPlayer;
+    private SlotState currentPlayer;
 
     //models
     GameModel gameModel;
@@ -60,7 +60,8 @@ public class GameController : MonoBehaviour
 
     private void GetPlayerTurn()
     {
-        currentPlayer = Random.Range(0,2);
+        int currentPlayerIndex = Random.Range(0,2);
+        currentPlayer = (currentPlayerIndex == (int)SlotState.RED) ? SlotState.WHITE : SlotState.RED;
 
     }
 
@@ -68,15 +69,62 @@ public class GameController : MonoBehaviour
     {
         startView.onStartGame += StartGame; //assiging StartGame function to be called onStartGame
         gameView.board.onColumnClicked += HandleColumnClicked;
+        gameView.board.onColumnHovered += HandleColumnHovered;
     }
 
-    public SlotState GetCurrentPlayerColor()
+    private void OnDestroy()
     {
-        return currentPlayer == 1 ? SlotState.RED : SlotState.WHITE;
+        startView.onStartGame -= StartGame; 
+        gameView.board.onColumnClicked -= HandleColumnClicked;
+        gameView.board.onColumnHovered -= HandleColumnHovered;
+        
     }
 
+    private void TogglePlayerTurn(int colIndex)
+    {
+        int hoverSlotIndex = gameView.board.columns.Length - 1;
+        int nextAvilableSlot = gameModel.GetNextSlotInColumn(colIndex);
+
+        currentPlayer = (currentPlayer == SlotState.RED) ? SlotState.WHITE : SlotState.RED;
+
+        if(nextAvilableSlot >= 0)
+        {
+            gameView.board.SetSlotState(colIndex, hoverSlotIndex, currentPlayer);
+        } else
+        {
+            gameView.board.SetSlotState(colIndex, hoverSlotIndex, SlotState.EMPTY);
+        }
+        
+    }
+
+    
     public void HandleColumnClicked(int colIndex)
     {
-        Debug.Log("chene " + colIndex);
+        
+        int nextAvilableSlot = gameModel.GetNextSlotInColumn(colIndex);
+
+        if (nextAvilableSlot >= 0)
+        {
+            gameModel.SetUsedSlot(colIndex, nextAvilableSlot, currentPlayer);
+            gameView.board.SetSlotState(colIndex, nextAvilableSlot, currentPlayer);
+            TogglePlayerTurn(colIndex);
+        }
+    }
+
+    public void HandleColumnHovered(int colIndex)
+    {
+        int nextAvilableSlot = gameModel.GetNextSlotInColumn(colIndex);
+        int hoverSlotIndex = gameView.board.columns.Length - 1;
+
+        //if column is full
+        if (nextAvilableSlot < 0)
+        {
+            gameView.board.SetSlotState(colIndex, hoverSlotIndex, SlotState.EMPTY);
+        }
+        else {
+            gameView.board.SetSlotState(colIndex, hoverSlotIndex, currentPlayer);
+        }
+
+        
     }
 }

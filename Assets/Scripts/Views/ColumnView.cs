@@ -8,16 +8,18 @@ public class ColumnView : BaseView, IPointerEnterHandler, IPointerExitHandler, I
 {
     public SlotView[] slots;
     public Action<ColumnView> onColumnClicked;
+    public Action<ColumnView> onColumnHovered;
+    
 
     public void OnPointerClick(PointerEventData eventData)
     {
         onColumnClicked?.Invoke(this);
+
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        SlotState playerColor = GameController.gameInstance.GetCurrentPlayerColor();
-        slots[slots.Length - 1].SetState(playerColor);
+        onColumnHovered?.Invoke(this);
     }
 
     public void OnPointerExit(PointerEventData eventData)
