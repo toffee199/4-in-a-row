@@ -1,21 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 using UnityEngine.EventSystems;
 
 public class ColumnView : BaseView, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     public SlotView[] slots;
+    public Action<ColumnView> onColumnClicked;
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        throw new System.NotImplementedException();
+        onColumnClicked?.Invoke(this);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        //SlotState playerColor = GameController.gameInstance.GetCurrentSlotState();
-        slots[slots.Length - 1].SetState(SlotState.RED);
+        SlotState playerColor = GameController.gameInstance.GetCurrentPlayerColor();
+        slots[slots.Length - 1].SetState(playerColor);
     }
 
     public void OnPointerExit(PointerEventData eventData)

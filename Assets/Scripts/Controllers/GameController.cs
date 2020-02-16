@@ -11,6 +11,8 @@ public class GameController : MonoBehaviour
     public StartView startView;
     public GameView gameView;
 
+    private int currentPlayer;
+
     //models
     GameModel gameModel;
     
@@ -22,6 +24,7 @@ public class GameController : MonoBehaviour
         if (gameInstance == null)
         {
             gameInstance = this;
+            SetCallbacks();
         }
         else
         {
@@ -35,7 +38,8 @@ public class GameController : MonoBehaviour
         if (!string.IsNullOrEmpty(player1Name) && !string.IsNullOrEmpty(player2Name)) {
 
             startView.Hide();
-            
+
+            GetPlayerTurn();
             gameModel.SetPlayerNames(player1Name, player2Name);
             gameView.StartNewGame(player1Name, player2Name);
             gameView.Show();
@@ -52,5 +56,27 @@ public class GameController : MonoBehaviour
         startView.Show();
         gameView.Hide();
         
+    }
+
+    private void GetPlayerTurn()
+    {
+        currentPlayer = Random.Range(0,2);
+
+    }
+
+    private void SetCallbacks()
+    {
+        startView.onStartGame += StartGame; //assiging StartGame function to be called onStartGame
+        gameView.board.onColumnClicked += HandleColumnClicked;
+    }
+
+    public SlotState GetCurrentPlayerColor()
+    {
+        return currentPlayer == 1 ? SlotState.RED : SlotState.WHITE;
+    }
+
+    public void HandleColumnClicked(int colIndex)
+    {
+        Debug.Log("chene " + colIndex);
     }
 }

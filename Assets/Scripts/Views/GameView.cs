@@ -12,8 +12,6 @@ public class GameView : BaseView
     {
         base.Show();
         board.Reset();
-        board.SetSlotState(0, 0, SlotState.RED);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
     }
 
     public void StartNewGame(string player1Name, string player2Name)
