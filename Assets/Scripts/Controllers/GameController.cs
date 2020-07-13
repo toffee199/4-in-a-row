@@ -83,8 +83,8 @@ public class GameController : MonoBehaviour
     private void TogglePlayerTurn(int colIndex)
     {
         int hoverSlotIndex = gameView.board.columns.Length - 1;
-        int nextAvilableSlot = gameModel.GetNextSlotInColumn(colIndex);
-
+        int nextAvilableSlot = gameModel.GetNextAvilableSlot(colIndex);
+        
         currentPlayer = (currentPlayer == SlotState.RED) ? SlotState.WHITE : SlotState.RED;
 
         if(nextAvilableSlot >= 0)
@@ -101,19 +101,28 @@ public class GameController : MonoBehaviour
     public void HandleColumnClicked(int colIndex)
     {
         
-        int nextAvilableSlot = gameModel.GetNextSlotInColumn(colIndex);
+        int nextAvilableSlot = gameModel.GetNextAvilableSlot(colIndex);
 
         if (nextAvilableSlot >= 0)
         {
             gameModel.SetUsedSlot(colIndex, nextAvilableSlot, currentPlayer);
             gameView.board.SetSlotState(colIndex, nextAvilableSlot, currentPlayer);
-            TogglePlayerTurn(colIndex);
+            bool isWin = gameModel.GetGameWinState(colIndex, nextAvilableSlot, currentPlayer);
+            if (!isWin)
+            {
+                TogglePlayerTurn(colIndex);
+            }
+            else
+            {
+                Debug.Log("WIN!!");
+            }
+            
         }
     }
 
     public void HandleColumnHovered(int colIndex)
     {
-        int nextAvilableSlot = gameModel.GetNextSlotInColumn(colIndex);
+        int nextAvilableSlot = gameModel.GetNextAvilableSlot(colIndex);
         int hoverSlotIndex = gameView.board.columns.Length - 1;
 
         //if column is full

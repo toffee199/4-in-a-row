@@ -6,7 +6,7 @@ public class GameModel
 {
     private string player1Name;
     private string player2Name;
-    private SlotState[,] board = new SlotState[7,6];
+    private readonly SlotState[,] board = new SlotState[7,6];
 
     public GameModel ()
     {
@@ -56,16 +56,21 @@ public class GameModel
         } 
     }
 
-    public int GetNextSlotInColumn(int columnIndex)
+    public int GetNextAvilableSlot(int col)
     {
         for(int i = 0; i < board.GetLength(1); i++)
         {
-            if(board[columnIndex, i] == SlotState.EMPTY)
+            if(board[col, i] == SlotState.EMPTY)
             {
                 return i;
             }        
         }
         return -1;
+    }
+
+    public bool GetGameWinState(int col, int row, SlotState slotColor) 
+    {
+        return SequenceFinder.IsAWin(board, col, row, slotColor);
     }
 
 }
