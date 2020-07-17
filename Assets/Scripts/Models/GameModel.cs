@@ -24,6 +24,15 @@ public class GameModel
         return player2Name;
     }
 
+    public string GetPlayerName(SlotState currentPlayer)
+    {
+        if (currentPlayer == SlotState.RED)
+            return player1Name;
+        if (currentPlayer == SlotState.WHITE)
+            return player2Name;
+        return "";
+    }
+
     public void SetPlayer1Name(string playerName)
     {
         player1Name = playerName;
@@ -71,6 +80,21 @@ public class GameModel
     public bool GetGameWinState(int col, int row, SlotState slotColor) 
     {
         return SequenceFinder.IsAWin(board, col, row, slotColor);
+    }
+
+    public bool GetIsBoardFull()
+    {
+        for (int i = 0; i < board.GetLength(0); i++)
+        {
+            for (int j = 0; j < board.GetLength(1); j++)
+            {
+                if(board[i, j] == SlotState.EMPTY)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 }

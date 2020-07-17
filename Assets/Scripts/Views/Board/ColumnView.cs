@@ -6,7 +6,9 @@ using UnityEngine.EventSystems;
 
 public class ColumnView : BaseView, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
-    public SlotView[] slots;
+    [SerializeField]
+    private SlotView[] slots;
+
     public Action<ColumnView> onColumnClicked;
     public Action<ColumnView> onColumnHovered;
     

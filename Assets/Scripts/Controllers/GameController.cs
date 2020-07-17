@@ -3,27 +3,26 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    
     //this is our singelton
     public static GameController gameInstance;
 
     //views
     public StartView startView;
     public GameView gameView;
+    public GameOverView gameOverView;
 
     private SlotState currentPlayer;
 
     //models
-    GameModel gameModel;
+    private GameModel gameModel;
     
     private void Awake()
     {
-        gameModel = new GameModel();
-        InitializeWindows();
-
         if (gameInstance == null)
         {
             gameInstance = this;
+            gameModel = new GameModel();
+            InitializeWindows();
             SetCallbacks();
         }
         else
@@ -55,6 +54,7 @@ public class GameController : MonoBehaviour
     {
         startView.Show();
         gameView.Hide();
+        gameOverView.Hide();
         
     }
 
@@ -70,6 +70,9 @@ public class GameController : MonoBehaviour
         startView.onStartGame += StartGame; //assiging StartGame function to be called onStartGame
         gameView.board.onColumnClicked += HandleColumnClicked;
         gameView.board.onColumnHovered += HandleColumnHovered;
+
+        gameOverView.onNewGame += InitializeWindows;
+        gameOverView.onExit += Application.Quit;
     }
 
     private void OnDestroy()
@@ -82,19 +85,27 @@ public class GameController : MonoBehaviour
 
     private void TogglePlayerTurn(int colIndex)
     {
-        int hoverSlotIndex = gameView.board.columns.Length - 1;
         int nextAvilableSlot = gameModel.GetNextAvilableSlot(colIndex);
         
         currentPlayer = (currentPlayer == SlotState.RED) ? SlotState.WHITE : SlotState.RED;
 
         if(nextAvilableSlot >= 0)
         {
-            gameView.board.SetSlotState(colIndex, hoverSlotIndex, currentPlayer);
+            gameView.board.SetHoverSlotState(colIndex, currentPlayer);
         } else
         {
-            gameView.board.SetSlotState(colIndex, hoverSlotIndex, SlotState.EMPTY);
+            gameView.board.SetHoverSlotState(colIndex, SlotState.EMPTY);
         }
         
+    }
+
+    private void HandleGameOver(bool isTie)
+    {
+        gameView.Hide();
+        gameModel.ResetBoard();
+        string winningPlayerName = isTie ? null : gameModel.GetPlayerName(currentPlayer);
+        SlotState winningPlayer = isTie ? SlotState.EMPTY : currentPlayer;
+        gameOverView.ShowGameOverView(winningPlayer, winningPlayerName);
     }
 
     
@@ -107,14 +118,17 @@ public class GameController : MonoBehaviour
         {
             gameModel.SetUsedSlot(colIndex, nextAvilableSlot, currentPlayer);
             gameView.board.SetSlotState(colIndex, nextAvilableSlot, currentPlayer);
+
             bool isWin = gameModel.GetGameWinState(colIndex, nextAvilableSlot, currentPlayer);
-            if (!isWin)
+            bool isTie = gameModel.GetIsBoardFull();
+
+            if (!isWin && !isTie)
             {
                 TogglePlayerTurn(colIndex);
             }
             else
             {
-                Debug.Log("WIN!!");
+                HandleGameOver(isTie);
             }
             
         }
@@ -123,15 +137,14 @@ public class GameController : MonoBehaviour
     public void HandleColumnHovered(int colIndex)
     {
         int nextAvilableSlot = gameModel.GetNextAvilableSlot(colIndex);
-        int hoverSlotIndex = gameView.board.columns.Length - 1;
 
         //if column is full
         if (nextAvilableSlot < 0)
         {
-            gameView.board.SetSlotState(colIndex, hoverSlotIndex, SlotState.EMPTY);
+            gameView.board.SetHoverSlotState(colIndex, SlotState.EMPTY);
         }
         else {
-            gameView.board.SetSlotState(colIndex, hoverSlotIndex, currentPlayer);
+            gameView.board.SetHoverSlotState(colIndex, currentPlayer);
         }
 
         

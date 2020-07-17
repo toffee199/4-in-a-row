@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class StartView : BaseView { 
 
-    public TMP_InputField playerName1Input, playerName2Input;
+    [SerializeField]
+    private TMP_InputField playerName1Input, playerName2Input;
+
     public Action<string, string> onStartGame;
 
     public void StartGameClicked()

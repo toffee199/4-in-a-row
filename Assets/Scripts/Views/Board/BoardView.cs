@@ -5,7 +5,9 @@ using System;
 
 public class BoardView : BaseView
 {
-    public ColumnView[] columns;
+    [SerializeField]
+    private ColumnView[] columns;
+
     public Action<int> onColumnClicked;
     public Action<int> onColumnHovered;
 
@@ -38,6 +40,13 @@ public class BoardView : BaseView
     public void SetSlotState(int col, int row, SlotState state)
     {
         columns[col].SetSlotState(row, state);
+    }
+
+    public void SetHoverSlotState(int col, SlotState state)
+    {
+        int hoverIndex = columns.Length - 1;
+        SetSlotState(col, hoverIndex, state);
+
     }
 
     private void HandleColumnClicked(ColumnView column)

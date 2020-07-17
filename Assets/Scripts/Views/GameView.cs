@@ -4,8 +4,9 @@ using UnityEngine.UI;
 
 public class GameView : BaseView
 {
+    [SerializeField]
+    private TMP_Text player1NameText, player2NameText;
 
-    public TMP_Text player1NameText, player2NameText;
     public BoardView board;
 
     public override void Show()
