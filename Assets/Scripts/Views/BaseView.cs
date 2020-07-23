@@ -17,4 +17,10 @@ public class BaseView : MonoBehaviour
     {
         ToggleVisibility(false);
     }
+
+    public virtual void Reset()
+    {
+
+    }
+    
 }
