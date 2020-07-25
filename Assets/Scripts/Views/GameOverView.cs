@@ -10,10 +10,14 @@ public class GameOverView : BaseView
     private TMP_Text gameStateText;
     [SerializeField]
     private SlotView slotView;
+    [SerializeField]
+    private HighScoresView highScoresView;
 
+
+    
     public Action onNewGame, onExit;
 
-    public void ShowGameOverView(SlotState winingPlayer, string playerName = null)
+    public void ShowGameOverView(SlotState winingPlayer, List<HighScoreItemData> highScores, string playerName = null)
     {
         base.Show();
         if(winingPlayer == SlotState.EMPTY)
@@ -26,6 +30,7 @@ public class GameOverView : BaseView
             slotView.gameObject.SetActive(true);
             slotView.SetState(winingPlayer);
         }
+        highScoresView.Init(highScores);
     }
 
     public void OnNewGameButtonClicked()

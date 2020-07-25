@@ -54,10 +54,11 @@ public static class SequenceFinder
         { 
             case Line.VERTICAL:
                 return 0 * direction;
+            case Line.SECOND_DIAGONAL:
+                return -1 * direction;
             default:
             case Line.FIRST_DIAGONAL:
             case Line.HORIZONTAL:
-            case Line.SECOND_DIAGONAL:
                 return 1 * direction;
         } 
     }
