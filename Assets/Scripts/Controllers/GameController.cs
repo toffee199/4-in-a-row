@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
@@ -18,32 +16,17 @@ public class GameController : MonoBehaviour
 
     //models
     private GameModel gameModel;
-    private List<HighScoreItemData> highScores;
-
+    private HigheScoreModel higheScoreModel;
+    
     private void Awake()
     {
         if (gameInstance == null)
         {
             gameInstance = this;
             gameModel = new GameModel();
+            higheScoreModel = new HigheScoreModel();
             InitializeWindows();
             SetCallbacks();
-            var highScoreJson = PlayerPrefs.GetString("High Scores", null);
-            if (highScoreJson != null)
-            {
-                try
-                {
-                    highScores = JsonHelper.FromJson<HighScoreItemData>(highScoreJson);
-                }
-                catch
-                {
-
-                }
-            }
-            if (highScores == null || highScores.Count == 0)
-            {
-                highScores = new List<HighScoreItemData>();
-            }
         }
         else
         {
@@ -66,8 +49,8 @@ public class GameController : MonoBehaviour
                 gameView.StartNewGame(player1Name, "Computer");
                 gameView.SetScores(player1Score, player2Score);
                 gameView.Show();
+                PlayComputerTurn();
                 err = false;
-                if (currentPlayer == SlotState.WHITE) HandleColumnClicked(Random.Range(0, 7));
             }
             else if(!string.IsNullOrEmpty(player2Name))
             {
@@ -100,6 +83,14 @@ public class GameController : MonoBehaviour
         int currentPlayerIndex = Random.Range(0,2);
         currentPlayer = (currentPlayerIndex == (int)SlotState.RED) ? SlotState.WHITE : SlotState.RED;
 
+    }
+
+    private void PlayComputerTurn()
+    {
+        if (isVsAi && currentPlayer == SlotState.WHITE)
+        {
+            HandleColumnClicked(Random.Range(0, 7));
+        }
     }
 
     private void SetCallbacks()
@@ -147,9 +138,7 @@ public class GameController : MonoBehaviour
                 gameView.board.SetHoverSlotState(colIndex, SlotState.EMPTY);
             }
         }
-        if (isVsAi && currentPlayer == SlotState.WHITE) {
-            HandleColumnClicked(Random.Range(0, 7));
-        }
+        PlayComputerTurn();
     }
 
     private void HandleGameOver(bool isTie)
@@ -159,8 +148,8 @@ public class GameController : MonoBehaviour
         string winningPlayerName = isTie ? null : gameModel.GetPlayerName(currentPlayer);
         SlotState winningPlayer = isTie ? SlotState.EMPTY : currentPlayer;
         int winningScore = winningPlayer == SlotState.RED ? player1Score : player2Score;
-        if (!isTie) { SaveHighScore(winningScore, winningPlayerName); }
-        gameOverView.ShowGameOverView(winningPlayer, GetTopHighScores(), winningPlayerName);
+        if (!isTie) { higheScoreModel.SaveHighScore(winningScore, winningPlayerName); }
+        gameOverView.ShowGameOverView(winningPlayer, higheScoreModel.GetTopHighScores(), winningPlayerName);
     }
 
     
@@ -206,25 +195,4 @@ public class GameController : MonoBehaviour
         isVsAi = isAi;
     }
 
-    private void SaveHighScore(int score, string name)
-    {
-        var newHighScore = new HighScoreItemData(name, score);
-        highScores.Add(newHighScore);
-        var highScoreJson = JsonHelper.ToJson(highScores);
-        Debug.Log("Saving High Scores: " + highScoreJson);
-        PlayerPrefs.SetString("High Scores", highScoreJson);
-    }
-
-    private List<HighScoreItemData> GetTopHighScores()
-    {
-        List<HighScoreItemData> retval = new List<HighScoreItemData>();
-        highScores.Sort((x, y) => y.score.CompareTo(x.score));
-        int i = 0;
-        while (i < 5 && i < highScores.Count)
-        {
-            retval.Add(highScores[i]);
-            i++;
-        }
-        return retval;
-    }
 }
