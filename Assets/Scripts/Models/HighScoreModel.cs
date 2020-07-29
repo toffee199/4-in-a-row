@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HigheScoreModel
+public class HighScoreModel
 {
     private List<HighScoreItemData> highScores;
     const string HIGH_SCORE_PREFS = "High Scores";
 
-    public HigheScoreModel()
+    public HighScoreModel()
     {
         string highScoreJson = PlayerPrefs.GetString(HIGH_SCORE_PREFS, null);
         if (!string.IsNullOrEmpty(highScoreJson)) {
@@ -44,12 +44,14 @@ public class HigheScoreModel
 [Serializable]
 public class HighScoreItemData
 {
-    public string displayName;
-    public int score;
+    public string displayName { get; private set; }
+    public int score { get; private set; }
 
     public HighScoreItemData(string name, int score)
     {
         this.displayName = name;
         this.score = score;
     }
+
+     
 }

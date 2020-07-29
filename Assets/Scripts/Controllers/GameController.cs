@@ -3,20 +3,23 @@
 public class GameController : MonoBehaviour
 {
     //this is our singelton
-    public static GameController gameInstance;
+    private static GameController gameInstance;
 
     //views
-    public StartView startView;
-    public GameView gameView;
-    public GameOverView gameOverView;
+    [SerializeField]
+    private StartView startView;
+    [SerializeField]
+    private GameView gameView;
+    [SerializeField]
+    private GameOverView gameOverView;
 
     private SlotState currentPlayer;
-    bool isVsAi = false;
-    int player1Score = 210, player2Score = 210;
+    private bool isVsAi = false;
+    private int player1Score = 210, player2Score = 210;
 
     //models
     private GameModel gameModel;
-    private HigheScoreModel higheScoreModel;
+    private HighScoreModel higheScoreModel;
     
     private void Awake()
     {
@@ -24,7 +27,7 @@ public class GameController : MonoBehaviour
         {
             gameInstance = this;
             gameModel = new GameModel();
-            higheScoreModel = new HigheScoreModel();
+            higheScoreModel = new HighScoreModel();
             InitializeWindows();
             SetCallbacks();
         }
