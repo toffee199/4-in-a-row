@@ -11,11 +11,11 @@ public static class JsonHelper
     }
 
 
-    public static string ToJson<T>(List<T> array, bool prettyPrint = false)
+    public static string ToJson<T>(List<T> array)
     {
         Wrapper<T> wrapper = new Wrapper<T>();
         wrapper.Items = array;
-        return JsonUtility.ToJson(wrapper, prettyPrint);
+        return JsonUtility.ToJson(wrapper);
     }
 
     [Serializable]

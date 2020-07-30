@@ -14,7 +14,7 @@ public class HighScoresView : MonoBehaviour
         {
             var item = Instantiate(Resources.Load("Prefabs/HighScoreItem")) as GameObject;
             var highScoreItemView = item.GetComponent<HighScoreItemView>();
-            highScoreItemView.Init(highScore.GetDisplayName(), highScore.GetScore());
+            highScoreItemView.Init(highScore.displayName, highScore.score);
             item.transform.SetParent(transform);
             item.transform.localScale = Vector3.one;
         }

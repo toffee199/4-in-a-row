@@ -29,7 +29,7 @@ public class HighScoreModel
     public List<HighScoreItemData> GetTopHighScores()
     {
         List<HighScoreItemData> top5Scores = new List<HighScoreItemData>();
-        highScores.Sort((x, y) => y.GetScore().CompareTo(x.GetScore()));
+        highScores.Sort((x, y) => y.score.CompareTo(x.score));
         int i = 0;
         while (i < 5 && i < highScores.Count)
         {
@@ -44,23 +44,13 @@ public class HighScoreModel
 [Serializable]
 public class HighScoreItemData
 {
-    private string displayName;
-    private int score;
+    public string displayName;
+    public int score;
 
     public HighScoreItemData(string name, int score)
     {
         this.displayName = name;
         this.score = score;
     }
-
-    public string GetDisplayName()
-    {
-        return displayName;
-    }
-    public int GetScore()
-    {
-        return score;
-    }
-
      
 }
